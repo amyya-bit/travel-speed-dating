@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WeRoad Travel Speed Dating</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --coral:#EF5361; --coral-ink:#ffffff; --ink:#000000; --paper:#ffffff;
+  --soft:#FDECEE; --muted:#6b6b6b; --line:#e6e2e2; --card:#ffffff;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#ffffff; --paper:#151314; --soft:#2a1b1d; --muted:#b4acad; --line:#3a3335; --card:#1f1c1d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#ffffff; --paper:#151314; --soft:#2a1b1d; --muted:#b4acad; --line:#3a3335; --card:#1f1c1d;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:16px; line-height:1.5; -webkit-tap-highlight-color:transparent;
+}
+main{max-width:480px;margin:0 auto;padding:20px 18px 40px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.logo span{color:var(--coral)}
+.who{font-size:.85rem;color:var(--muted)}
+h1{font-size:2.1rem;line-height:1.1;font-weight:800;letter-spacing:-.03em;margin:0 0 12px}
+h2{font-size:1.5rem;line-height:1.2;font-weight:800;letter-spacing:-.02em;margin:0 0 8px}
+p{margin:0 0 14px}
+.lead{color:var(--muted)}
+label{display:block;font-weight:600;margin:18px 0 6px}
+input[type=text]{
+  width:100%;font:inherit;font-size:1.2rem;padding:12px 2px;border:0;border-bottom:3px dashed var(--ink);
+  background:transparent;color:var(--ink);outline:none;border-radius:0;
+}
+input[type=text]:focus{border-bottom-color:var(--coral)}
+.btn{
+  display:block;width:100%;font:inherit;font-weight:600;font-size:1.05rem;padding:15px 18px;margin-top:14px;
+  border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;text-align:center;text-decoration:none;
+}
+.btn.coral{background:var(--coral);border-color:var(--coral);color:var(--coral-ink)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:focus-visible,.choice:focus-visible,.link:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.link{background:none;border:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer;padding:8px 0;margin-top:10px}
+
+.progress{display:flex;gap:5px;margin:0 0 18px}
+.progress i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.progress i.on{background:var(--coral)}
+.ask{font-size:.95rem;color:var(--muted);margin-bottom:4px}
+.q{font-size:1.6rem;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin:0 0 18px}
+
+/* The this-or-that split: the memorable bit */
+.split{display:grid;grid-template-columns:1fr 1fr;border:3px solid var(--ink);border-radius:22px;overflow:hidden;min-height:260px}
+.choice{
+  font:inherit;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:18px 10px;background:var(--card);color:var(--ink);transition:transform .12s ease, background .15s ease;
+}
+.choice + .choice{border-left:3px solid var(--ink)}
+.choice .e{font-size:3.6rem;line-height:1}
+.choice .t{font-weight:600;font-size:1rem;line-height:1.25;text-align:center}
+.choice:active{transform:scale(.97)}
+.choice.picked{background:var(--coral);color:var(--coral-ink)}
+.or{text-align:center;font-weight:800;color:var(--muted);margin:10px 0 0;font-size:.9rem}
+
+.picks{list-style:none;padding:0;margin:14px 0}
+.picks li{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.picks .e{font-size:1.6rem;width:2rem;text-align:center}
+.picks .mark{margin-left:auto;font-weight:600;font-size:.9rem}
+.picks .yes{color:var(--coral)}
+.picks .no{color:var(--muted)}
+
+.style-card{background:var(--coral);color:var(--coral-ink);border-radius:22px;padding:22px 20px;margin:6px 0 16px}
+.style-card .big{font-size:1.9rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:6px}
+
+.score{text-align:center;margin:8px 0 6px}
+.score .num{font-size:5rem;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--coral)}
+.score .of{font-size:1.4rem;font-weight:600;color:var(--muted)}
+.hearts{text-align:center;font-size:1.5rem;letter-spacing:4px;margin-bottom:10px}
+.verdict{text-align:center;font-weight:600;font-size:1.15rem;margin-bottom:6px}
+
+.board{list-style:none;padding:0;margin:14px 0}
+.board li{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--line);border-radius:16px;margin-bottom:8px}
+.board li.top{border-color:var(--coral);background:var(--soft)}
+.board .n{font-weight:600;font-size:1.1rem}
+.board .s{margin-left:auto;font-weight:800;font-size:1.2rem}
+.board .tag{display:block;font-size:.8rem;color:var(--coral);font-weight:600}
+.empty{padding:18px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}
+
+@media (prefers-reduced-motion: reduce){ .choice{transition:none} }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+
+<script>
+const QUESTIONS = [
+  {ask:"Do you wing it or plan every minute?", a:{e:"🎲",t:"No plan"}, b:{e:"📋",t:"Plan it all"}, wild:"a"},
+  {ask:"Beach or mountains?", a:{e:"🌴",t:"Beach"}, b:{e:"🏔️",t:"Mountains"}, wild:"b"},
+  {ask:"Hostel bunk or hotel bed?", a:{e:"🛏️",t:"Hostel"}, b:{e:"🏨",t:"Hotel"}, wild:"a"},
+  {ask:"Adrenaline or total relaxation?", a:{e:"🪂",t:"Adrenaline"}, b:{e:"💆‍♀️",t:"Spa day"}, wild:"a"},
+  {ask:"Paper map or phone maps?", a:{e:"🗺️",t:"Paper map"}, b:{e:"📱",t:"Phone maps"}, wild:"a"},
+  {ask:"Suitcase or backpack?", a:{e:"🧳",t:"Suitcase"}, b:{e:"🎒",t:"Backpack"}, wild:"b"},
+  {ask:"Street food or sit-down restaurant?", a:{e:"🚚",t:"Street food"}, b:{e:"🍽️",t:"Restaurant"}, wild:"a"}
+];
+const N = QUESTIONS.length;
+const KEY = "wr-travel-speed-dating-v1";
+
+let state = load() || fresh();
+function fresh(){ return {screen:"intro", name:"", me:Array(N).fill(null), q:0, dates:[], cur:null}; }
+function load(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function go(screen, extra){ Object.assign(state, extra||{}, {screen}); save(); render(); window.scrollTo(0,0); }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function header(){
+  return `<div class="brand"><div class="logo">We<span>Road</span></div>${state.name ? `<div class="who">Hi, I’m ${esc(state.name)}</div>` : ""}</div>`;
+}
+function progress(i, answers){
+  return `<div class="progress" aria-label="Question ${i+1} of ${N}">${QUESTIONS.map((_,k)=>`<i class="${answers[k]!==null||k<i?'on':''}"></i>`).join("")}</div>`;
+}
+function styleOf(me){
+  const w = me.filter((v,i)=>v===QUESTIONS[i].wild).length;
+  if (w>=5) return {name:"Free spirit", text:"You’re happiest off the beaten track, with a backpack and no fixed plans."};
+  if (w>=3) return {name:"Happy medium", text:"A bit of adventure, a bit of comfort. You’re easy to travel with."};
+  return {name:"Comfort seeker", text:"You like a good bed, a plan and a proper dinner. Nothing wrong with that."};
+}
+function verdict(s){
+  if (s===N) return "Travel twins! Book the flights.";
+  if (s>=5) return "Strong match. You’d happily share a room.";
+  if (s>=3) return "Opposites attract. You’d balance each other out.";
+  return "Very different travellers. You’d come back with stories.";
+}
+
+function questionScreen(answers, i, title, onPick){
+  const q = QUESTIONS[i];
+  return `${header()}${progress(i, answers)}
+    <div class="ask">${title}</div>
+    <div class="q">${q.ask}</div>
+    <div class="split" role="group" aria-label="${esc(q.ask)}">
+      ${["a","b"].map(k=>`<button class="choice ${answers[i]===k?'picked':''}" data-pick="${k}">
+        <span class="e" aria-hidden="true">${q[k].e}</span><span class="t">${q[k].t}</span></button>`).join("")}
+    </div>
+    ${i>0 ? `<button class="link" data-act="back">Back</button>` : ""}`;
+}
+
+function render(){
+  const app = document.getElementById("app");
+  const s = state;
+
+  if (s.screen==="intro"){
+    app.innerHTML = `${header()}
+      <h1>Travel Speed Dating</h1>
+      <p class="lead">Pick your travel style, then meet the group one by one. Ask each person the same questions and see who you’re most compatible with.</p>
+      <label for="name">Hi, I’m</label>
+      <input id="name" type="text" autocomplete="given-name" maxlength="24" value="${esc(s.name)}" placeholder="Your first name">
+      <button class="btn coral" id="go" ${s.name.trim()?'':'disabled'}>Pick my travel style</button>`;
+    const inp = app.querySelector("#name"), btn = app.querySelector("#go");
+    inp.addEventListener("input", ()=>{ btn.disabled = !inp.value.trim(); });
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter" && inp.value.trim()) btn.click(); });
+    btn.onclick = ()=> go("me", {name:inp.value.trim(), q:0});
+    return;
+  }
+
+  if (s.screen==="me"){
+    app.innerHTML = questionScreen(s.me, s.q, "Your travel style", null);
+    app.querySelectorAll("[data-pick]").forEach(b=> b.onclick = ()=>{
+      s.me[s.q] = b.dataset.pick; b.classList.add("picked");
+      setTimeout(()=>{ s.q < N-1 ? go("me",{q:s.q+1}) : go("meDone"); }, 180);
+    });
+    const back = app.querySelector('[data-act="back"]'); if (back) back.onclick = ()=> go("me",{q:s.q-1});
+    return;
+  }
+
+  if (s.screen==="meDone"){
+    const st = styleOf(s.me);
+    app.innerHTML = `${header()}
+      <h2>You’re a…</h2>
+      <div class="style-card"><div class="big">${st.name}</div><div>${st.text}</div></div>
+      <ul class="picks">${QUESTIONS.map((q,i)=>`<li><span class="e" aria-hidden="true">${q[s.me[i]].e}</span>${q[s.me[i]].t}</li>`).join("")}</ul>
+      <button class="btn coral" data-act="date">Start date ${s.dates.length+1}</button>
+      ${s.dates.length ? `<button class="btn ghost" data-act="board">See my matches</button>` : ""}
+      <button class="link" data-act="redo">Change my answers</button>`;
+    app.querySelector('[data-act="date"]').onclick = ()=> go("dateName",{cur:{name:"",ans:Array(N).fill(null)}});
+    const b = app.querySelector('[data-act="board"]'); if (b) b.onclick = ()=> go("board");
+    app.querySelector('[data-act="redo"]').onclick = ()=> go("me",{q:0});
+    return;
+  }
+
+  if (s.screen==="dateName"){
+    app.innerHTML = `${header()}
+      <h2>Date ${s.dates.length+1}</h2>
+      <p class="lead">Say hi and ask her name. Then ask her each question and tap her answer.</p>
+      <label for="dn">She’s called</label>
+      <input id="dn" type="text" maxlength="24" placeholder="Her first name" value="${esc(s.cur.name)}">
+      <button class="btn coral" id="go" ${s.cur.name.trim()?'':'disabled'}>Start asking</button>
+      <button class="link" data-act="cancel">Cancel</button>`;
+    const inp = app.querySelector("#dn"), btn = app.querySelector("#go");
+    inp.addEventListener("input", ()=>{ btn.disabled = !inp.value.trim(); });
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter" && inp.value.trim()) btn.click(); });
+    btn.onclick = ()=>{ s.cur.name = inp.value.trim(); go("dateQ",{q:0}); };
+    app.querySelector('[data-act="cancel"]').onclick = ()=> go(s.dates.length ? "board" : "meDone", {cur:null});
+    inp.focus();
+    return;
+  }
+
+  if (s.screen==="dateQ"){
+    app.innerHTML = questionScreen(s.cur.ans, s.q, `Ask ${esc(s.cur.name)}`, null);
+    app.querySelectorAll("[data-pick]").forEach(b=> b.onclick = ()=>{
+      s.cur.ans[s.q] = b.dataset.pick; b.classList.add("picked");
+      setTimeout(()=>{
+        if (s.q < N-1) return go("dateQ",{q:s.q+1});
+        const score = s.cur.ans.filter((v,i)=>v===s.me[i]).length;
+        s.dates.push({name:s.cur.name, ans:s.cur.ans, score});
+        go("result",{cur:null});
+      }, 180);
+    });
+    const back = app.querySelector('[data-act="back"]'); if (back) back.onclick = ()=> go("dateQ",{q:s.q-1});
+    return;
+  }
+
+  if (s.screen==="result"){
+    const d = s.dates[s.dates.length-1];
+    app.innerHTML = `${header()}
+      <h2>You and ${esc(d.name)}</h2>
+      <div class="score"><span class="num">${d.score}</span><span class="of"> / ${N}</span></div>
+      <div class="hearts" aria-hidden="true">${"❤️".repeat(d.score)}${"🤍".repeat(N-d.score)}</div>
+      <div class="verdict">${verdict(d.score)}</div>
+      <ul class="picks">${QUESTIONS.map((q,i)=>{
+        const same = d.ans[i]===s.me[i];
+        return `<li><span class="e" aria-hidden="true">${q[d.ans[i]].e}</span>${q[d.ans[i]].t}
+          <span class="mark ${same?'yes':'no'}">${same?'Match':'You: '+q[s.me[i]].t}</span></li>`;
+      }).join("")}</ul>
+      <button class="btn coral" data-act="date">Next date</button>
+      <button class="btn ghost" data-act="board">See my matches</button>`;
+    app.querySelector('[data-act="date"]').onclick = ()=> go("dateName",{cur:{name:"",ans:Array(N).fill(null)}});
+    app.querySelector('[data-act="board"]').onclick = ()=> go("board");
+    return;
+  }
+
+  if (s.screen==="board"){
+    const sorted = s.dates.map((d,i)=>({...d,i})).sort((a,b)=>b.score-a.score);
+    const best = sorted.length ? sorted[0].score : -1;
+    app.innerHTML = `${header()}
+      <h2>My matches</h2>
+      <p class="lead">Your travel style: ${styleOf(s.me).name}</p>
+      ${sorted.length ? `<ul class="board">${sorted.map(d=>`<li class="${d.score===best?'top':''}">
+          <div><span class="n">${esc(d.name)}</span>${d.score===best?'<span class="tag">Your travel soulmate</span>':''}</div>
+          <span class="s">${d.score}/${N}</span></li>`).join("")}</ul>`
+        : `<div class="empty">No dates yet. Start your first one.</div>`}
+      <button class="btn coral" data-act="date">Start date ${s.dates.length+1}</button>
+      <a class="btn ghost" href="https://www.weroad.co.uk" target="_blank" rel="noopener">Find a WeRoad trip together</a>
+      <button class="link" data-act="mine">See my answers</button><br>
+      <button class="link" data-act="reset">Start over</button>`;
+    app.querySelector('[data-act="date"]').onclick = ()=> go("dateName",{cur:{name:"",ans:Array(N).fill(null)}});
+    app.querySelector('[data-act="mine"]').onclick = ()=> go("meDone");
+    app.querySelector('[data-act="reset"]').onclick = ()=>{
+      if (confirm("Start over? This clears your answers and matches on this phone.")){ state = fresh(); save(); render(); }
+    };
+    return;
+  }
+}
+render();
+</script>
+</body>
+</html>
